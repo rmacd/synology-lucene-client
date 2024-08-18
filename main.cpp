@@ -12,11 +12,11 @@
 #define NOMINMAX
 #endif
 
-#include <lucene++/targetver.h>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <lucene++/FilterIndexReader.h>
 #include <lucene++/LuceneHeaders.h>
+#include <lucene++/LuceneSync.h>
 #include <lucene++/MiscUtils.h>
 
 /// Use the norms from one field for all fields.  Norms are read into memory, using a byte of memory
