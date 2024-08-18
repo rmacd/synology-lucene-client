@@ -23,7 +23,7 @@
 /// per document per searched field.  This can cause search of large collections with a large number
 /// of fields to run out of memory.  If all of the fields contain only a single token, then the norms
 /// are all identical, then single norm vector may be shared.
-class OneNormsReader : public FilterIndexReader {
+class OneNormsReader : public Lucene::FilterIndexReader {
 public:
     OneNormsReader(const Lucene::IndexReaderPtr& in, const Lucene::String& field) : FilterIndexReader(in) {
         this->field = field;
