@@ -12,14 +12,12 @@
 #define NOMINMAX
 #endif
 
+#include <lucene++/targetver.h>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
-#include "lucene++/targetver.h"
-#include "lucene++/FilterIndexReader.h"
-#include "lucene++/LuceneHeaders.h"
-#include "lucene++/MiscUtils.h"
-
-using namespace Lucene;
+#include <lucene++/FilterIndexReader.h>
+#include <lucene++/LuceneHeaders.h>
+#include <lucene++/MiscUtils.h>
 
 /// Use the norms from one field for all fields.  Norms are read into memory, using a byte of memory
 /// per document per searched field.  This can cause search of large collections with a large number
@@ -27,7 +25,7 @@ using namespace Lucene;
 /// are all identical, then single norm vector may be shared.
 class OneNormsReader : public FilterIndexReader {
 public:
-    OneNormsReader(const IndexReaderPtr& in, const String& field) : FilterIndexReader(in) {
+    OneNormsReader(const Lucene::IndexReaderPtr& in, const Lucene::String& field) : FilterIndexReader(in) {
         this->field = field;
     }
 
@@ -35,10 +33,10 @@ public:
     }
 
 protected:
-    String field;
+    Lucene::String field;
 
 public:
-    virtual ByteArray norms(const String& field) {
+    virtual Lucene::ByteArray norms(const Lucene::String& field) {
         return in->norms(this->field);
     }
 };
@@ -49,11 +47,11 @@ public:
 /// When the query is executed for the first time, then only enough results are collected to fill 5 result
 /// pages. If the user wants to page beyond this limit, then the query is executed another time and all
 /// hits are collected.
-static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, int32_t hitsPerPage, bool raw, bool interactive) {
+static void doPagingSearch(const Lucene::SearcherPtr& searcher, const Lucene::QueryPtr& query, int32_t hitsPerPage, bool raw, bool interactive) {
     // Collect enough docs to show 5 pages
-    TopScoreDocCollectorPtr collector = TopScoreDocCollector::create(5 * hitsPerPage, false);
+    Lucene::TopScoreDocCollectorPtr collector = Lucene::TopScoreDocCollector::create(5 * hitsPerPage, false);
     searcher->search(query, collector);
-    Collection<ScoreDocPtr> hits = collector->topDocs()->scoreDocs;
+    Lucene::Collection<Lucene::ScoreDocPtr> hits = collector->topDocs()->scoreDocs;
 
     int32_t numTotalHits = collector->getTotalHits();
     std::wcout << numTotalHits << L" total matching documents\n";
@@ -65,7 +63,7 @@ static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, i
         if (end > hits.size()) {
             std::wcout << L"Only results 1 - " << hits.size() << L" of " << numTotalHits << L" total matching documents collected.\n";
             std::wcout << L"Collect more (y/n) ?";
-            String line;
+            Lucene::String line;
             std::wcin >> line;
             boost::trim(line);
 
@@ -73,7 +71,7 @@ static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, i
                 break;
             }
 
-            collector = TopScoreDocCollector::create(numTotalHits, false);
+            collector = Lucene::TopScoreDocCollector::create(numTotalHits, false);
             searcher->search(query, collector);
             hits = collector->topDocs()->scoreDocs;
         }
@@ -86,16 +84,16 @@ static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, i
                 continue;
             }
 
-            DocumentPtr doc = searcher->doc(hits[i]->doc);
-            String path = doc->get(L"SYNOMDPath");
+            Lucene::DocumentPtr doc = searcher->doc(hits[i]->doc);
+            Lucene::String path = doc->get(L"path");
             if (!path.empty()) {
-                std::wcout << StringUtils::toString(i + 1) + L". " << path << L"\n";
-                String title = doc->get(L"title");
+                std::wcout << Lucene::StringUtils::toString(i + 1) + L". " << path << L"\n";
+                Lucene::String title = doc->get(L"title");
                 if (!title.empty()) {
                     std::wcout << L"   Title: " << doc->get(L"title") << L"\n";
                 }
             } else {
-                std::wcout << StringUtils::toString(i + 1) + L". No path for this document\n";
+                std::wcout << Lucene::StringUtils::toString(i + 1) + L". No path for this document\n";
             }
         }
 
@@ -115,7 +113,7 @@ static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, i
                 }
                 std::wcout << L"(q)uit or enter number to jump to a page: ";
 
-                String line;
+                Lucene::String line;
                 std::wcin >> line;
                 boost::trim(line);
 
@@ -134,8 +132,8 @@ static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, i
                 } else {
                     int32_t page = 0;
                     try {
-                        page = StringUtils::toInt(line);
-                    } catch (NumberFormatException&) {
+                        page = Lucene::StringUtils::toInt(line);
+                    } catch (Lucene::NumberFormatException&) {
                     }
                     if ((page - 1) * hitsPerPage < numTotalHits) {
                         start = std::max((int32_t)0, (page - 1) * hitsPerPage);
@@ -153,7 +151,7 @@ static void doPagingSearch(const SearcherPtr& searcher, const QueryPtr& query, i
     }
 }
 
-class StreamingHitCollector : public Collector {
+class StreamingHitCollector : public Lucene::Collector {
 public:
     StreamingHitCollector() {
         docBase = 0;
@@ -163,7 +161,7 @@ public:
     }
 
 protected:
-    ScorerPtr scorer;
+    Lucene::ScorerPtr scorer;
     int32_t docBase;
 
 public:
@@ -176,11 +174,11 @@ public:
         return true;
     }
 
-    virtual void setNextReader(const IndexReaderPtr& reader, int32_t docBase) {
+    virtual void setNextReader(const Lucene::IndexReaderPtr& reader, int32_t docBase) {
         this->docBase = docBase;
     }
 
-    virtual void setScorer(const ScorerPtr& scorer) {
+    virtual void setScorer(const Lucene::ScorerPtr& scorer) {
         this->scorer = scorer;
     }
 };
@@ -190,8 +188,8 @@ public:
 ///
 /// This simulates the streaming search use case, where all hits are supposed to be processed, regardless
 /// of their relevance.
-static void doStreamingSearch(const SearcherPtr& searcher, const QueryPtr& query) {
-    searcher->search(query, newLucene<StreamingHitCollector>());
+static void doStreamingSearch(const Lucene::SearcherPtr& searcher, const Lucene::QueryPtr& query) {
+    searcher->search(query, Lucene::newLucene<StreamingHitCollector>());
 }
 
 /// Simple command-line based search demo.
@@ -204,38 +202,38 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        String index = L"index";
-        String field = L"contents";
-        String queries;
+        Lucene::String index = L"index";
+        Lucene::String field = L"contents";
+        Lucene::String queries;
         int32_t repeat = 0;
         bool raw = false;
-        String normsField;
+        Lucene::String normsField;
         bool paging = true;
         int32_t hitsPerPage = 10;
 
         for (int32_t i = 0; i < argc; ++i) {
             if (strcmp(argv[i], "-index") == 0) {
-                index = StringUtils::toUnicode(argv[i + 1]);
+                index = Lucene::StringUtils::toUnicode(argv[i + 1]);
                 ++i;
             } else if (strcmp(argv[i], "-field") == 0) {
-                field = StringUtils::toUnicode(argv[i + 1]);
+                field = Lucene::StringUtils::toUnicode(argv[i + 1]);
                 ++i;
             } else if (strcmp(argv[i], "-queries") == 0) {
-                queries = StringUtils::toUnicode(argv[i + 1]);
+                queries = Lucene::StringUtils::toUnicode(argv[i + 1]);
                 ++i;
             } else if (strcmp(argv[i], "-repeat") == 0) {
-                repeat = StringUtils::toInt(StringUtils::toUnicode(argv[i + 1]));
+                repeat = Lucene::StringUtils::toInt(Lucene::StringUtils::toUnicode(argv[i + 1]));
                 ++i;
             } else if (strcmp(argv[i], "-raw") == 0) {
                 raw = true;
             } else if (strcmp(argv[i], "-norms") == 0) {
-                normsField = StringUtils::toUnicode(argv[i + 1]);
+                normsField = Lucene::StringUtils::toUnicode(argv[i + 1]);
                 ++i;
             } else if (strcmp(argv[i], "-paging") == 0) {
                 if (strcmp(argv[i + 1], "false") == 0) {
                     paging = false;
                 } else {
-                    hitsPerPage = StringUtils::toInt(StringUtils::toUnicode(argv[i + 1]));
+                    hitsPerPage = Lucene::StringUtils::toInt(Lucene::StringUtils::toUnicode(argv[i + 1]));
                     if (hitsPerPage == 0) {
                         paging = false;
                     }
@@ -245,33 +243,33 @@ int main(int argc, char* argv[]) {
         }
 
         // only searching, so read-only=true
-        IndexReaderPtr reader = IndexReader::open(FSDirectory::open(index), true);
+        Lucene::IndexReaderPtr reader = Lucene::IndexReader::open(Lucene::FSDirectory::open(index), true);
 
         if (!normsField.empty()) {
-            reader = newLucene<OneNormsReader>(reader, normsField);
+            reader = Lucene::newLucene<OneNormsReader>(reader, normsField);
         }
 
-        SearcherPtr searcher = newLucene<IndexSearcher>(reader);
-        AnalyzerPtr analyzer = newLucene<StandardAnalyzer>(LuceneVersion::LUCENE_CURRENT);
-        QueryParserPtr parser = newLucene<QueryParser>(LuceneVersion::LUCENE_CURRENT, field, analyzer);
+        Lucene::SearcherPtr searcher = Lucene::newLucene<Lucene::IndexSearcher>(reader);
+        Lucene::AnalyzerPtr analyzer = Lucene::newLucene<Lucene::StandardAnalyzer>(Lucene::LuceneVersion::LUCENE_CURRENT);
+        Lucene::QueryParserPtr parser = Lucene::newLucene<Lucene::QueryParser>(Lucene::LuceneVersion::LUCENE_CURRENT, field, analyzer);
 
-        ReaderPtr in;
+        Lucene::ReaderPtr in;
         if (!queries.empty()) {
-            in = newLucene<FileReader>(queries);
+            in = Lucene::newLucene<Lucene::FileReader>(queries);
         }
 
         while (true) {
-            String line;
+            Lucene::String line;
 
             if (!queries.empty()) {
                 wchar_t c = in->read();
-                while (c != L'\n' && c != L'\r' && c != Reader::READER_EOF) {
+                while (c != L'\n' && c != L'\r' && c != Lucene::Reader::READER_EOF) {
                     line += c;
                     c = in->read();
                 }
             } else {
                 std::wcout << L"Enter query: ";
-				getline(std::wcin, line);
+                getline(std::wcin, line);
             }
             boost::trim(line);
 
@@ -279,15 +277,15 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            QueryPtr query = parser->parse(line);
+            Lucene::QueryPtr query = parser->parse(line);
             std::wcout << L"Searching for: " << query->toString(field) << L"\n";
 
             if (repeat > 0) { // repeat and time as benchmark
-                int64_t start = MiscUtils::currentTimeMillis();
+                int64_t start = Lucene::MiscUtils::currentTimeMillis();
                 for (int32_t i = 0; i < repeat; ++i) {
-                    searcher->search(query, FilterPtr(), 100);
+                    searcher->search(query, Lucene::FilterPtr(), 100);
                 }
-                std::wcout << L"Time: " << (MiscUtils::currentTimeMillis() - start) << L"ms\n";
+                std::wcout << L"Time: " << (Lucene::MiscUtils::currentTimeMillis() - start) << L"ms\n";
             }
 
             if (paging) {
@@ -297,7 +295,7 @@ int main(int argc, char* argv[]) {
             }
         }
         reader->close();
-    } catch (LuceneException& e) {
+    } catch (Lucene::LuceneException& e) {
         std::wcout << L"Exception: " << e.getError() << L"\n";
         return 1;
     }
