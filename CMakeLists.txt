@@ -1,6 +1,9 @@
 project(searchfiles)
 
 cmake_minimum_required(VERSION 3.24)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 ####################################
 # src
@@ -8,16 +11,21 @@ cmake_minimum_required(VERSION 3.24)
 file(GLOB_RECURSE searchfiles_sources
         "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 
+####################################
+# create executable target
+####################################
+add_executable(searchfiles
+        ${searchfiles_sources})
 
 ### BOOST
 
 # Find Boost libraries
-find_package(Boost REQUIRED COMPONENTS filesystem system)
+find_package(Boost REQUIRED COMPONENTS filesystem system date_time iostreams regex thread)
 
 if(Boost_FOUND)
     message(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
-    include_directories(${Boost_INCLUDE_DIRS})
-    target_link_libraries(searchfiles Boost::filesystem Boost::system)
+    target_include_directories(searchfiles PRIVATE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(searchfiles PRIVATE Boost::filesystem Boost::system Boost::date_time Boost::iostreams Boost::regex Boost::thread)
 else()
     message(FATAL_ERROR "Boost not found!")
 endif()
@@ -33,48 +41,18 @@ find_path(LUCENE_INCLUDE_DIR NAMES lucene++/LuceneHeaders.h HINTS /opt/local/inc
 # Check if the library and include path were found
 if(LUCENE_LIBRARY AND LUCENE_INCLUDE_DIR)
     message(STATUS "Found Lucene++: ${LUCENE_LIBRARY}")
-    include_directories(${LUCENE_INCLUDE_DIR})
-
-    # Add the executable or library you are building
-    add_executable(my_executable main.cpp)
-
-    # Link against the Lucene++ library
-    target_link_libraries(my_executable ${LUCENE_LIBRARY})
-
+    target_include_directories(searchfiles PRIVATE ${LUCENE_INCLUDE_DIR})
+    target_link_libraries(searchfiles PRIVATE ${LUCENE_LIBRARY})
 else()
     message(FATAL_ERROR "Could not find Lucene++ library")
 endif()
 
-
 ####################################
-# create executable target
+# Additional dependencies
 ####################################
-add_executable(searchfiles
-        ${searchfiles_sources})
-
-
-####################################
-# include directories
-####################################
-target_include_directories(searchfiles
-        PRIVATE
-        $<BUILD_INTERFACE:${lucene++_BINARY_DIR}/include>
-        $<BUILD_INTERFACE:${lucene++_SOURCE_DIR}/include/lucene++>
-        ${Boost_INCLUDE_DIRS})
-
-
-####################################
-# dependencies
-####################################
-target_link_libraries(searchfiles
-        PRIVATE
-        Boost::boost
-        Boost::date_time
-        Boost::filesystem
-        Boost::iostreams
-        Boost::regex
-        Boost::system
-        Boost::thread
-        ZLIB::ZLIB
-        lucene++::lucene++
-        lucene++::lucene++-contrib)
+find_package(ZLIB REQUIRED)
+if(ZLIB_FOUND)
+    target_link_libraries(searchfiles PRIVATE ZLIB::ZLIB)
+else()
+    message(FATAL_ERROR "ZLIB not found!")
+endif()

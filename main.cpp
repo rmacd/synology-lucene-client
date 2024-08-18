@@ -12,12 +12,12 @@
 #define NOMINMAX
 #endif
 
-#include "<targetver.h>"
 #include <iostream>
 #include <boost/algorithm/string.hpp>
-#include "LuceneHeaders.h"
-#include "FilterIndexReader.h"
-#include "MiscUtils.h"
+#include "lucene++/targetver.h"
+#include "lucene++/FilterIndexReader.h"
+#include "lucene++/LuceneHeaders.h"
+#include "lucene++/MiscUtils.h"
 
 using namespace Lucene;
 
