@@ -5,27 +5,16 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(FetchContent)
-
 ####################################
-# Fetch Boost from GitHub
+# Find Boost Libraries
 ####################################
-FetchContent_Declare(
-        boost
-        GIT_REPOSITORY https://github.com/boostorg/boost.git
-        GIT_TAG boost-1.78.0
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/_deps/boost-src
-        BINARY_DIR ${CMAKE_BINARY_DIR}/_deps/boost-build
-)
+find_package(Boost 1.78.0 REQUIRED COMPONENTS filesystem system date_time iostreams regex thread)
 
-# Optionally initialize submodules
-set(FETCHCONTENT_QUIET NO)
-FetchContent_MakeAvailable(boost)
-
-# Set the Boost root directory to the fetched Boost
-set(BOOST_ROOT ${CMAKE_BINARY_DIR}/_deps/boost-src)
-set(BOOST_INCLUDEDIR ${BOOST_ROOT})
-set(BOOST_LIBRARYDIR ${CMAKE_BINARY_DIR}/_deps/boost-build/stage/lib)
+if(Boost_FOUND)
+    message(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
+else()
+    message(FATAL_ERROR "Boost 1.78.0 not found!")
+endif()
 
 ####################################
 # src
@@ -41,17 +30,9 @@ add_executable(searchfiles
 
 ### BOOST
 
-# Use find_package to find Boost components
-set(Boost_NO_SYSTEM_PATHS TRUE)
-find_package(Boost 1.78.0 REQUIRED COMPONENTS filesystem system date_time iostreams regex thread)
-
-if(Boost_FOUND)
-    message(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
-    target_include_directories(searchfiles PRIVATE ${Boost_INCLUDE_DIRS})
-    target_link_libraries(searchfiles PRIVATE Boost::filesystem Boost::system Boost::date_time Boost::iostreams Boost::regex Boost::thread)
-else()
-    message(FATAL_ERROR "Boost 1.78.0 not found!")
-endif()
+# Add Boost directories and link libraries
+target_include_directories(searchfiles PRIVATE ${Boost_INCLUDE_DIRS})
+target_link_libraries(searchfiles PRIVATE Boost::boost Boost::filesystem Boost::system Boost::date_time Boost::iostreams Boost::regex Boost::thread)
 
 ### LUCENE
 

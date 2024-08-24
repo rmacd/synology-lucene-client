@@ -1,23 +1,9 @@
-/////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2009-2014 Alan Wright. All rights reserved.
-// Distributable under the terms of either the Apache License (Version 2.0)
-// or the GNU Lesser General Public License.
-/////////////////////////////////////////////////////////////////////////////
-
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-
+#include "lucene++/targetver.h"
 #include <iostream>
 #include <boost/algorithm/string.hpp>
-#include <lucene++/FilterIndexReader.h>
-#include <lucene++/LuceneHeaders.h>
-#include <lucene++/LuceneSync.h>
-#include <lucene++/MiscUtils.h>
+#include "lucene++/LuceneHeaders.h"
+#include "lucene++/FilterIndexReader.h"
+#include "lucene++/MiscUtils.h"
 
 /// Use the norms from one field for all fields.  Norms are read into memory, using a byte of memory
 /// per document per searched field.  This can cause search of large collections with a large number
