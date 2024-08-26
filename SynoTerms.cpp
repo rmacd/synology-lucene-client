@@ -1,0 +1,52 @@
+#include "SynoTerms.h"
+
+const std::wstring SynoTerms::driveFileID = L"SYNODriveFileID";
+const std::wstring SynoTerms::driveFileLabel = L"SYNODriveFileLabel";
+const std::wstring SynoTerms::driveFileStar = L"SYNODriveFileStar";
+const std::wstring SynoTerms::acquisitionMake = L"SYNOMDAcquisitionMake";
+const std::wstring SynoTerms::acquisitionModel = L"SYNOMDAcquisitionModel";
+const std::wstring SynoTerms::attributeChangeDate = L"SYNOMDAttributeChangeDate";
+const std::wstring SynoTerms::authors = L"SYNOMDAuthors";
+const std::wstring SynoTerms::city = L"SYNOMDCity";
+const std::wstring SynoTerms::contentModificationDate = L"SYNOMDContentModificationDate";
+const std::wstring SynoTerms::contributors = L"SYNOMDContributors";
+const std::wstring SynoTerms::copyright = L"SYNOMDCopyright";
+const std::wstring SynoTerms::country = L"SYNOMDCountry";
+const std::wstring SynoTerms::coverage = L"SYNOMDCoverage";
+const std::wstring SynoTerms::creator = L"SYNOMDCreator";
+const std::wstring SynoTerms::dateAdded = L"SYNOMDDateAdded";
+const std::wstring SynoTerms::description = L"SYNOMDDescription";
+const std::wstring SynoTerms::displayName = L"SYNOMDDisplayName";
+const std::wstring SynoTerms::docInfo = L"SYNOMDDocInfo.SYNOMDPageLengthVector";
+const std::wstring SynoTerms::extension = L"SYNOMDExtension";
+const std::wstring SynoTerms::fsContentChangeDate = L"SYNOMDFSContentChangeDate";
+const std::wstring SynoTerms::fsCreationDate = L"SYNOMDFSCreationDate";
+const std::wstring SynoTerms::fsName = L"SYNOMDFSName";
+const std::wstring SynoTerms::fsSize = L"SYNOMDFSSize";
+const std::wstring SynoTerms::finderOpenDate = L"SYNOMDFinderOpenDate";
+const std::wstring SynoTerms::headline = L"SYNOMDHeadline";
+const std::wstring SynoTerms::identifier = L"SYNOMDIdentifier";
+const std::wstring SynoTerms::isDir = L"SYNOMDIsDir";
+const std::wstring SynoTerms::keywords = L"SYNOMDKeywords";
+const std::wstring SynoTerms::kind = L"SYNOMDKind";
+const std::wstring SynoTerms::languages = L"SYNOMDLanguages";
+const std::wstring SynoTerms::lastUsedDate = L"SYNOMDLastUsedDate";
+const std::wstring SynoTerms::logicalSize = L"SYNOMDLogicalSize";
+const std::wstring SynoTerms::ownerGroupID = L"SYNOMDOwnerGroupID";
+const std::wstring SynoTerms::ownerUserID = L"SYNOMDOwnerUserID";
+const std::wstring SynoTerms::parent = L"SYNOMDParent";
+const std::wstring SynoTerms::path = L"SYNOMDPath";
+const std::wstring SynoTerms::privilege = L"SYNOMDPrivilege";
+const std::wstring SynoTerms::publishers = L"SYNOMDPublishers";
+const std::wstring SynoTerms::rights = L"SYNOMDRights";
+const std::wstring SynoTerms::searchAncestor = L"SYNOMDSearchAncestor";
+const std::wstring SynoTerms::searchFileName = L"SYNOMDSearchFileName";
+const std::wstring SynoTerms::textContent = L"SYNOMDTextContent";
+const std::wstring SynoTerms::title = L"SYNOMDTitle";
+const std::wstring SynoTerms::wildcard = L"SYNOMDWildcard";
+const std::wstring SynoTerms::stateOrProvince = L"SYNOStateOrProvince";
+const std::wstring SynoTerms::sysFinderLabel = L"_SYNOMDFinderLabel";
+const std::wstring SynoTerms::sysGroupId = L"_SYNOMDGroupId";
+const std::wstring SynoTerms::sysUserTags = L"_SYNOMDUserTags";
+
+

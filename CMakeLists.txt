@@ -26,7 +26,7 @@ file(GLOB_RECURSE searchfiles_sources
 # create executable target
 ####################################
 add_executable(searchfiles
-        ${searchfiles_sources})
+        ${searchfiles_sources} SynoTerms.cpp SynoTerms.h)
 
 ### BOOST
 
