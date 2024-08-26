@@ -1,0 +1,216 @@
+{
+  "event_handler": {
+    "lib_path": "/var/packages/SynoFinder/target/handler/fileindex_event_handler.so"
+  },
+  "id": "fileindex_searchtest",
+  "mappings": {
+    "default": {
+      "_all": true,
+      "analyzer": "synostandard",
+      "required": false,
+      "stored": true,
+      "type": "string"
+    },
+    "properties": {
+      "SYNOMDAcquisitionMake": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDAcquisitionModel": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDAlbum": {
+        "type": "text"
+      },
+      "SYNOMDAperture": {
+        "analyzer": "keyword"
+      },
+      "SYNOMDAttributeChangeDate": {
+        "type": "int"
+      },
+      "SYNOMDAudioBitRate": {
+        "type": "int"
+      },
+      "SYNOMDAudioChannelCount": {
+        "type": "int"
+      },
+      "SYNOMDAudioSampleRate": {
+        "type": "int"
+      },
+      "SYNOMDAudioTrackNumber": {
+        "type": "int"
+      },
+      "SYNOMDAuthors": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDCodecs": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDComment": {
+        "type": "text"
+      },
+      "SYNOMDComposer": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDContentCreationDate": {
+        "type": "int"
+      },
+      "SYNOMDContentModificationDate": {
+        "type": "int"
+      },
+      "SYNOMDCreator": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDDateAdded": {
+        "type": "int"
+      },
+      "SYNOMDDescription": {
+        "type": "text"
+      },
+      "SYNOMDDurationSecond": {
+        "type": "double"
+      },
+      "SYNOMDExposureTimeString": {
+        "analyzer": "keyword"
+      },
+      "SYNOMDExtension": {
+        "_all": false,
+        "analyzer": "keyword"
+      },
+      "SYNOMDFSContentChangeDate": {
+        "type": "int"
+      },
+      "SYNOMDFSCreationDate": {
+        "type": "int"
+      },
+      "SYNOMDFSName": {
+        "_all": false,
+        "analyzer": "keyword"
+      },
+      "SYNOMDFSSize": {
+        "type": "int"
+      },
+      "SYNOMDFinderLabel": {
+        "type": "int"
+      },
+      "SYNOMDFinderOpenDate": {
+        "type": "int"
+      },
+      "SYNOMDGroupId": {
+        "analyzer": "keyword"
+      },
+      "SYNOMDISOSpeed": {
+        "type": "int"
+      },
+      "SYNOMDIdentifier": {
+        "_all": false,
+        "analyzer": "keyword",
+        "type": "text"
+      },
+      "SYNOMDIsDir": {
+        "_all": false,
+        "type": "bool"
+      },
+      "SYNOMDIsEncrypted": {
+        "_all": false,
+        "type": "bool"
+      },
+      "SYNOMDKeywords": {},
+      "SYNOMDLastUsedDate": {
+        "type": "int"
+      },
+      "SYNOMDLogicalSize": {
+        "type": "int"
+      },
+      "SYNOMDMediaTypes": {
+        "analyzer": "keyword"
+      },
+      "SYNOMDMusicalGenre": {
+        "type": "text"
+      },
+      "SYNOMDOwnerGroupID": {
+        "_all": false,
+        "analyzer": "keyword"
+      },
+      "SYNOMDOwnerUserID": {
+        "_all": false,
+        "analyzer": "keyword"
+      },
+      "SYNOMDParent": {
+        "_all": false,
+        "analyzer": "keyword"
+      },
+      "SYNOMDPath": {
+        "_all": false,
+        "analyzer": "keyword",
+        "required": true
+      },
+      "SYNOMDPhysicalSize": {
+        "type": "int"
+      },
+      "SYNOMDPrivilege": {
+        "_all": false,
+        "analyzer": "keyword"
+      },
+      "SYNOMDRecordingYear": {
+        "type": "int"
+      },
+      "SYNOMDResolutionHeightDPI": {
+        "type": "int"
+      },
+      "SYNOMDResolutionWidthDPI": {
+        "type": "int"
+      },
+      "SYNOMDSearchAncestor": {
+        "_all": false,
+        "analyzer": "white space escaped",
+        "preprocess": [
+          "list_ancestor"
+        ],
+        "stored": false,
+        "type": "text"
+      },
+      "SYNOMDSearchFileName": {
+        "analyzer": "white space",
+        "preprocess": [
+          "tolower",
+          "ngram"
+        ],
+        "stored": false,
+        "type": "text"
+      },
+      "SYNOMDSpotlightBoost": {
+        "analyzer": "white space",
+        "type": "text"
+      },
+      "SYNOMDStarRating": {
+        "analyzer": "keyword"
+      },
+      "SYNOMDTextContent": {
+        "type": "text"
+      },
+      "SYNOMDTitle": {
+        "type": "text"
+      },
+      "SYNOMDTotalBitRate": {
+        "type": "int"
+      },
+      "SYNOMDVideoBitRate": {
+        "type": "int"
+      },
+      "_SYNOMDUserTags": {
+        "type": "text"
+      }
+    },
+    "property_id": "SYNOMDPath"
+  },
+  "path": "/volume1/searchtest/@eaDir/SYNO@.fileindexdb",
+  "persistent": true,
+  "settings": {},
+  "term_suggest": true
+}

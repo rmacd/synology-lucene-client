@@ -3,7 +3,9 @@ project(searchfiles)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS ON)
+
+set(CMAKE_BUILD_TYPE Debug)
 
 ####################################
 # Find Boost Libraries
@@ -26,7 +28,7 @@ file(GLOB_RECURSE searchfiles_sources
 # create executable target
 ####################################
 add_executable(searchfiles
-        ${searchfiles_sources} SynoTerms.cpp SynoTerms.h)
+        ${searchfiles_sources} SynoTerms.cpp SynoTerms.h SynoAnalyzer.cpp SynoAnalyzer.h)
 
 ### BOOST
 

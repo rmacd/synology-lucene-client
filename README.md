@@ -23,53 +23,57 @@ File formats taken from https://lucene.apache.org/core/2_9_4/fileformats.html.
 
 Fields within Synology NAS FTS:
 
-| Name within Synology Lucene instance | Name within this library           | Description / format                              |
-|:-------------------------------------|:-----------------------------------|:--------------------------------------------------|
-| SYNODriveFileID                      | SynoTerms::driveFileID             | _empty_                                           |
-| SYNODriveFileLabel                   | SynoTerms::driveFileLabel          | _empty_                                           |
-| SYNODriveFileStar                    | SynoTerms::driveFileStar           | _empty_                                           |
-| SYNOMDAcquisitionMake                | SynoTerms::acquisitionMake         | _empty_                                           |
-| SYNOMDAcquisitionModel               | SynoTerms::acquisitionModel        | _empty_                                           |
-| SYNOMDAttributeChangeDate            | SynoTerms::attributeChangeDate     | Unix epoch sec                                    |
-| SYNOMDAuthors                        | SynoTerms::authors                 | _empty_                                           |
-| SYNOMDCity                           | SynoTerms::city                    | _empty_                                           |
-| SYNOMDContentModificationDate        | SynoTerms::contentModificationDate | _empty_                                           |
-| SYNOMDContributors                   | SynoTerms::contributors            | _empty_                                           |
-| SYNOMDCopyright                      | SynoTerms::copyright               | _empty_                                           |
-| SYNOMDCountry                        | SynoTerms::country                 | _empty_                                           |
-| SYNOMDCoverage                       | SynoTerms::coverage                | _empty_                                           |
-| SYNOMDCreator                        | SynoTerms::creator                 | _empty_                                           |
-| SYNOMDDateAdded                      | SynoTerms::dateAdded               | Unix epoch sec                                    |
-| SYNOMDDescription                    | SynoTerms::description             | _empty_                                           |
-| SYNOMDDisplayName                    | SynoTerms::displayName             | File name without path                            |
-| SYNOMDDocInfo.SYNOMDPageLengthVector | SynoTerms::docInfo                 | _empty_                                           |
-| SYNOMDExtension                      | SynoTerms::extension               | eg "docx"                                         |
-| SYNOMDFSContentChangeDate            | SynoTerms::fsContentChangeDate     | Unix epoch sec                                    |
-| SYNOMDFSCreationDate                 | SynoTerms::fsCreationDate          | Unix epoch sec                                    |
-| SYNOMDFSName                         | SynoTerms::fsName                  | File name without path                            |
-| SYNOMDFSSize                         | SynoTerms::fsSize                  | Size in bytes                                     |
-| SYNOMDFinderOpenDate                 | SynoTerms::finderOpenDate          | Unix epoch sec                                    |
-| SYNOMDHeadline                       | SynoTerms::headline                | _empty_                                           |
-| SYNOMDIdentifier                     | SynoTerms::identifier              | _empty_                                           |
-| SYNOMDIsDir                          | SynoTerms::isDir                   | String "y" / "n"                                  |
-| SYNOMDKeywords                       | SynoTerms::keywords                | _empty_                                           |
-| SYNOMDKind                           | SynoTerms::kind                    | eg "docx"                                         |
-| SYNOMDLanguages                      | SynoTerms::languages               | _empty_                                           |
-| SYNOMDLastUsedDateQ                  | SynoTerms::lastUsedDate            | Unix epoch sec                                    |
-| SYNOMDLogicalSizeQ                   | SynoTerms::logicalSize             | Size in bytes                                     |
-| SYNOMDOwnerGroupID                   | SynoTerms::ownerGroupID            | Unix GID                                          |
-| SYNOMDOwnerUserID                    | SynoTerms::ownerUserID             | Unix UID                                          |
-| SYNOMDParent                         | SynoTerms::parent                  | eg /volume1/sharename                             |
-| SYNOMDPath                           | SynoTerms::path                    | Full path to file eg /volume1/sharename/file.docx |
-| SYNOMDPrivilege                      | SynoTerms::privilege               | Unix privs string eg "rwxrwx---"                  |
-| SYNOMDPublishers                     | SynoTerms::publishers              | _empty_                                           |
-| SYNOMDRights                         | SynoTerms::rights                  | _empty_                                           |
-| SYNOMDSearchAncestor                 | SynoTerms::searchAncestor          | _empty_                                           |
-| SYNOMDSearchFileName                 | SynoTerms::searchFileName          | _empty_                                           |
-| SYNOMDTextContent                    | SynoTerms::textContent             | Full text of document                             |
-| SYNOMDTitle                          | SynoTerms::title                   | _empty_                                           |
-| SYNOMDWildcard                       | SynoTerms::wildcard                | _empty_                                           |
-| SYNOStateOrProvince                  | SynoTerms::stateOrProvince         | _empty_                                           |
-| _SYNOMDFinderLabel                   | SynoTerms::sysFinderLabel          | eg "0"                                            |
-| _SYNOMDGroupId                       | SynoTerms::sysGroupId              | Unix GID                                          |
-| _SYNOMDUserTags                      | SynoTerms::sysUserTags             | _empty_                                           |
+| Name within Synology Lucene instance | Name within this library | Description / format                                |
+|:-------------------------------------|:-------------------------|:----------------------------------------------------|
+| SYNODriveFileID                      | driveFileID              | _empty_                                             |
+| SYNODriveFileLabel                   | driveFileLabel           | _empty_                                             |
+| SYNODriveFileStar                    | driveFileStar            | _empty_                                             |
+| SYNOMDAcquisitionMake                | acquisitionMake          | _empty_                                             |
+| SYNOMDAcquisitionModel               | acquisitionModel         | _empty_                                             |
+| SYNOMDAttributeChangeDate            | attributeChangeDate      | Unix epoch sec                                      |
+| SYNOMDAuthors                        | authors                  | eg _Jane Doe_                                       |
+| SYNOMDCity                           | city                     | _empty_                                             |
+| SYNOMDContentModificationDate        | contentModificationDate  | Unix epoch sec                                      |
+| SYNOMDContributors                   | contributors             | _empty_                                             |
+| SYNOMDCopyright                      | copyright                | _empty_                                             |
+| SYNOMDCountry                        | country                  | _empty_                                             |
+| SYNOMDCoverage                       | coverage                 | _empty_                                             |
+| SYNOMDCreator                        | creator                  | eg _Microsoft Office 2010_                          |
+| SYNOMDDateAdded                      | dateAdded                | Unix epoch sec                                      |
+| SYNOMDDescription                    | description              | _empty_                                             |
+| SYNOMDDisplayName                    | displayName              | File name without path                              |
+| SYNOMDDocInfo.SYNOMDPageLengthVector | docInfo                  | Character count per page eg `1280 1820` ...         |
+| SYNOMDExtension                      | extension                | eg `docx`                                           |
+| SYNOMDFSContentChangeDate            | fsContentChangeDate      | Unix epoch sec                                      |
+| SYNOMDFSCreationDate                 | fsCreationDate           | Unix epoch sec                                      |
+| SYNOMDFSName                         | fsName                   | File name without path                              |
+| SYNOMDFSSize                         | fsSize                   | Size in bytes                                       |
+| SYNOMDFinderOpenDate                 | finderOpenDate           | Unix epoch sec                                      |
+| SYNOMDHeadline                       | headline                 | _empty_                                             |
+| SYNOMDIdentifier                     | identifier               | _empty_                                             |
+| SYNOMDIsDir                          | isDir                    | String `y` / `n`                                    |
+| SYNOMDKeywords                       | keywords                 | _empty_                                             |
+| SYNOMDKind                           | kind                     | eg `docx`                                           |
+| SYNOMDLanguages                      | languages                | _empty_                                             |
+| SYNOMDLastUsedDate                   | lastUsedDate             | Unix epoch sec                                      |
+| SYNOMDLogicalSize                    | logicalSize              | Size in bytes                                       |
+| SYNOMDOwnerGroupID                   | ownerGroupID             | Unix GID                                            |
+| SYNOMDOwnerUserID                    | ownerUserID              | Unix UID                                            |
+| SYNOMDParent                         | parent                   | eg `/volume1/sharename`                             |
+| SYNOMDPath                           | path                     | Full path to file eg `/volume1/sharename/file.docx` |
+| SYNOMDPrivilege                      | privilege                | Unix privs string eg `rwxrwx---`                    |
+| SYNOMDPublishers                     | publishers               | _empty_                                             |
+| SYNOMDRights                         | rights                   | _empty_                                             |
+| SYNOMDSearchAncestor                 | searchAncestor           | _empty_                                             |
+| SYNOMDSearchFileName                 | searchFileName           | _empty_                                             |
+| SYNOMDTextContent                    | textContent              | Full text of document                               |
+| SYNOMDTitle                          | title                    | _empty_                                             |
+| SYNOMDWildcard                       | wildcard                 | _empty_                                             |
+| SYNOStateOrProvince                  | stateOrProvince          | _empty_                                             |
+| _SYNOMDFinderLabel                   | sysFinderLabel           | eg `0`                                              |
+| _SYNOMDGroupId                       | sysGroupId               | Unix GID                                            |
+| _SYNOMDUserTags                      | sysUserTags              | _empty_                                             |
+
+Lucene version compatibility: v3.0.7.
+
+[Luke 4.3.0](https://github.com/DmitryKey/luke/releases?page=4) can be used to read the Lucene++ indices.

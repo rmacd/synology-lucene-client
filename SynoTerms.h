@@ -11,7 +11,6 @@ public:
     static const std::wstring acquisitionMake;
     static const std::wstring acquisitionModel;
     static const std::wstring attributeChangeDate;
-
     static const std::wstring authors;
     static const std::wstring city;
     static const std::wstring contentModificationDate;
@@ -27,7 +26,6 @@ public:
     static const std::wstring extension;
     static const std::wstring fsContentChangeDate;
     static const std::wstring fsCreationDate;
-
     static const std::wstring fsName;
     static const std::wstring fsSize;
     static const std::wstring finderOpenDate;
@@ -43,7 +41,6 @@ public:
     static const std::wstring ownerUserID;
     static const std::wstring parent;
     static const std::wstring path;
-
     static const std::wstring privilege;
     static const std::wstring publishers;
     static const std::wstring rights;
@@ -56,7 +53,6 @@ public:
     static const std::wstring sysFinderLabel;
     static const std::wstring sysGroupId;
     static const std::wstring sysUserTags;
-
 };
 
 #endif // SEARCHFILES_SYNOTERMS_H

@@ -5,6 +5,7 @@
 #include "lucene++/FilterIndexReader.h"
 #include "lucene++/MiscUtils.h"
 #include "SynoTerms.h"
+#include "SynoAnalyzer.h"
 
 /// Use the norms from one field for all fields.  Norms are read into memory, using a byte of memory
 /// per document per searched field.  This can cause search of large collections with a large number
@@ -73,6 +74,7 @@ static void doPagingSearch(const Lucene::SearcherPtr& searcher, const Lucene::Qu
 
             Lucene::DocumentPtr doc = searcher->doc(hits[i]->doc);
             Lucene::String path = doc->get(SynoTerms::path);
+
             if (!path.empty()) {
                 std::wcout << Lucene::StringUtils::toString(i + 1) + L". " << path << L"\n";
                 Lucene::String title = doc->get(SynoTerms::title);
@@ -182,7 +184,7 @@ static void doStreamingSearch(const Lucene::SearcherPtr& searcher, const Lucene:
 /// Simple command-line based search demo.
 int main(int argc, char* argv[]) {
     if (argc == 1 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-help") == 0) {
-        std::wcout << L"Usage: searchfiles.exe [-index dir] [-field f] [-queries file] [-raw] ";
+        std::wcout << L"Usage: searchfiles [-index dir] [-field f] [-queries file] [-raw] ";
         std::wcout << L"[-norms field] [-paging hitsPerPage]\n\n";
         std::wcout << L"Specify 'false' for hitsPerPage to use streaming instead of paging search.\n";
         return 1;
@@ -190,7 +192,7 @@ int main(int argc, char* argv[]) {
 
     try {
         Lucene::String index = L"index";
-        Lucene::String field = SynoTerms::searchFileName;
+        Lucene::String field = L"SYNOMDTextContent"; // SynoTerms::textContent;
         Lucene::String queries;
         bool raw = false;
         Lucene::String normsField;
@@ -233,8 +235,8 @@ int main(int argc, char* argv[]) {
         }
 
         Lucene::SearcherPtr searcher = Lucene::newLucene<Lucene::IndexSearcher>(reader);
-        Lucene::AnalyzerPtr analyzer = Lucene::newLucene<Lucene::StandardAnalyzer>(Lucene::LuceneVersion::LUCENE_CURRENT);
-        Lucene::QueryParserPtr parser = Lucene::newLucene<Lucene::QueryParser>(Lucene::LuceneVersion::LUCENE_CURRENT, field, analyzer);
+        Lucene::AnalyzerPtr synoAnalyzer = Lucene::newLucene<Search::SynoAnalyzer>(Lucene::LuceneVersion::LUCENE_29);
+        Lucene::QueryParserPtr synoParser = Lucene::newLucene<Lucene::QueryParser>(Lucene::LuceneVersion::LUCENE_29, field, synoAnalyzer);
 
         Lucene::ReaderPtr in;
         if (!queries.empty()) {
@@ -260,8 +262,8 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            Lucene::QueryPtr query = parser->parse(line);
-            std::wcout << L"Searching for: " << query->toString(field) << L"\n";
+            Lucene::QueryPtr query = synoParser->parse(line);
+            std::wcout << L"Searching for: " << query->toString() << L"\n";
 
             if (paging) {
                 doPagingSearch(searcher, query, hitsPerPage, raw, queries.empty());
