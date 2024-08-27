@@ -30,7 +30,10 @@ float convertToFloat(const Lucene::NumericValue& value) {
 }
 
 static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const Lucene::QueryPtr& query, int32_t hitsPerPage) {
-    Lucene::TopScoreDocCollectorPtr collector = Lucene::TopScoreDocCollector::create(5 * hitsPerPage, true);
+
+    // maxHits = hitsPerPage * 5
+    int32_t maxHits = 100;
+    Lucene::TopScoreDocCollectorPtr collector = Lucene::TopScoreDocCollector::create(maxHits, true);
 
     CROW_LOG_INFO << "Searching for: " << wstring_to_string(query->toString());
     searcher->search(query, collector);
@@ -43,7 +46,7 @@ static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const
     sr.setTotalHits(numTotalHits);
 
     int32_t start = 0;
-    int32_t end = numTotalHits;
+    int32_t end = (numTotalHits < maxHits) ? numTotalHits : maxHits;
 
     for (int32_t i = start; i < end; ++i) {
         Search::SearchResult result;
