@@ -28,7 +28,7 @@ file(GLOB_RECURSE searchfiles_sources
 # create executable target
 ####################################
 add_executable(searchfiles
-        ${searchfiles_sources} SynoTerms.cpp SynoTerms.h SynoAnalyzer.cpp SynoAnalyzer.h)
+        ${searchfiles_sources} SynoTerms.cpp SynoTerms.h SynoAnalyzer.cpp SynoAnalyzer.h SearchResults.cpp SearchResults.h)
 
 ### BOOST
 
