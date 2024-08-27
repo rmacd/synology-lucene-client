@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdint>
 #include "SearchResults.h"
 
 namespace Search {
@@ -19,19 +20,19 @@ namespace Search {
         title = docTitle;
     }
 
-    const std::int32_t &SearchResult::getFsSize() const {
+    const std::uint32_t &SearchResult::getFsSize() const {
         return fsSize;
     }
 
-    void SearchResult::setFsSize(const std::int32_t &sz) {
+    void SearchResult::setFsSize(const std::uint32_t &sz) {
         fsSize = sz;
     }
 
-    const std::float_t &SearchResult::getScore() const {
+    const float &SearchResult::getScore() const {
         return score;
     };
 
-    void SearchResult::setScore(const std::float_t &docScore) {
+    void SearchResult::setScore(const float &docScore) {
         score = docScore;
     }
 

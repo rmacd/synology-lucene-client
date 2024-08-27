@@ -3,6 +3,7 @@
 #include "lucene++/targetver.h"
 #include <iostream>
 #include <codecvt>
+#include <cstdint>
 #include <boost/algorithm/string.hpp>
 #include "lucene++/LuceneHeaders.h"
 #include "lucene++/FilterIndexReader.h"
@@ -29,26 +30,26 @@ float convertToFloat(const Lucene::NumericValue& value) {
     }
 }
 
-static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const Lucene::QueryPtr& query, int32_t hitsPerPage) {
+static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const Lucene::QueryPtr& query, uint32_t hitsPerPage) {
 
     // maxHits = hitsPerPage * 5
-    int32_t maxHits = 100;
+    uint32_t maxHits = 100;
     Lucene::TopScoreDocCollectorPtr collector = Lucene::TopScoreDocCollector::create(maxHits, true);
 
     CROW_LOG_INFO << "Searching for: " << wstring_to_string(query->toString());
     searcher->search(query, collector);
     Lucene::Collection<Lucene::ScoreDocPtr> hits = collector->topDocs()->scoreDocs;
 
-    int32_t numTotalHits = collector->getTotalHits();
+    uint32_t numTotalHits = collector->getTotalHits();
     CROW_LOG_INFO << numTotalHits << " matching documents";
 
     Search::SearchResults sr;
     sr.setTotalHits(numTotalHits);
 
-    int32_t start = 0;
-    int32_t end = (numTotalHits < maxHits) ? numTotalHits : maxHits;
+    uint32_t start = 0;
+    uint32_t end = (numTotalHits < maxHits) ? numTotalHits : maxHits;
 
-    for (int32_t i = start; i < end; ++i) {
+    for (uint32_t i = start; i < end; ++i) {
         Search::SearchResult result;
 
         Lucene::DocumentPtr doc = searcher->doc(hits[i]->doc);
@@ -136,9 +137,9 @@ int main(int argc, char* argv[]) {
     Lucene::String queries;
     bool raw = false;
     bool paging = true;
-    int32_t hitsPerPage = 10;
+    uint32_t hitsPerPage = 10;
 
-    for (int32_t i = 0; i < argc; ++i) {
+    for (uint32_t i = 0; i < argc; ++i) {
         if (strcmp(argv[i], "-index") == 0) {
             index = Lucene::StringUtils::toUnicode(argv[i + 1]);
             ++i;

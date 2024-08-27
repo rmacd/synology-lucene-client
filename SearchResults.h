@@ -10,8 +10,8 @@ namespace Search {
     private:
         std::wstring path;
         std::wstring title;
-        std::int32_t fsSize;
-        std::float_t score;
+        std::uint32_t fsSize;
+        float score;
 
     public:
         const std::wstring &getPath() const;
@@ -22,13 +22,13 @@ namespace Search {
 
         void setTitle(const std::wstring &id);
 
-        const std::int32_t &getFsSize() const;
+        const std::uint32_t &getFsSize() const;
 
-        void setFsSize(const std::int32_t &sz);
+        void setFsSize(const std::uint32_t &sz);
 
-        const std::float_t &getScore() const;
+        const float &getScore() const;
 
-        void setScore(const std::float_t &docScore);
+        void setScore(const float &docScore);
     };
 
     class SearchResults {

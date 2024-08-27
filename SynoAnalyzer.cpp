@@ -7,6 +7,7 @@
 #include "lucene++/LowerCaseFilter.h"
 #include "lucene++/PorterStemFilter.h"
 #include "lucene++/StopFilter.h"
+#include "lucene++/Synchronize.h"
 
 namespace Search {
 
@@ -40,9 +41,7 @@ SynoAnalyzer::~SynoAnalyzer() {
 
 const Lucene::HashSet<Lucene::String> SynoAnalyzer::getDefaultStopSet() {
     static Lucene::HashSet<Lucene::String> stopSet;
-    LUCENE_RUN_ONCE(
-            stopSet = Lucene::HashSet<Lucene::String>::newInstance(_ENGLISH_STOP_WORDS, _ENGLISH_STOP_WORDS + SIZEOF_ARRAY(_ENGLISH_STOP_WORDS));
-    );
+    LUCENE_RUN_ONCE( stopSet = Lucene::HashSet<Lucene::String>::newInstance(_ENGLISH_STOP_WORDS, _ENGLISH_STOP_WORDS + SIZEOF_ARRAY(_ENGLISH_STOP_WORDS)) );
     return stopSet;
 }
 
@@ -52,11 +51,11 @@ void SynoAnalyzer::setStemExclusionTable(Lucene::HashSet<Lucene::String> exclusi
 }
 
 Lucene::TokenStreamPtr SynoAnalyzer::tokenStream(const Lucene::String& fieldName, const Lucene::ReaderPtr& reader) {
-    Lucene::TokenStreamPtr result = newLucene<Lucene::StandardTokenizer>(matchVersion, reader);
-    result = newLucene<Lucene::StandardFilter>(result);
-    result = newLucene<Lucene::LowerCaseFilter>(result);
-    result = newLucene<Lucene::StopFilter>(Lucene::StopFilter::getEnablePositionIncrementsVersionDefault(matchVersion), result, stopSet);
-    result = newLucene<Lucene::PorterStemFilter>(result);
+    Lucene::TokenStreamPtr result = Lucene::newLucene<Lucene::StandardTokenizer>(matchVersion, reader);
+    result = Lucene::newLucene<Lucene::StandardFilter>(result);
+    result = Lucene::newLucene<Lucene::LowerCaseFilter>(result);
+    result = Lucene::newLucene<Lucene::StopFilter>(Lucene::StopFilter::getEnablePositionIncrementsVersionDefault(matchVersion), result, stopSet);
+    result = Lucene::newLucene<Lucene::PorterStemFilter>(result);
     return result;
 }
 
