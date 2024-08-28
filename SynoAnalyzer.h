@@ -4,6 +4,8 @@
 #include "lucene++/LuceneContrib.h"
 #include "lucene++/Analyzer.h"
 
+// is based on the German analyzer
+
 namespace Search {
 
 class LPPCONTRIBAPI SynoAnalyzer : public Lucene::Analyzer {
@@ -20,19 +22,19 @@ class LPPCONTRIBAPI SynoAnalyzer : public Lucene::Analyzer {
     virtual ~SynoAnalyzer();
 
     protected:
-    /// Contains the stopwords used with the {@link StopFilter}.
+    // stopwords used with the {@link StopFilter}.
     Lucene::HashSet<Lucene::String> stopSet;
 
-    /// Contains words that should be indexed but not stemmed.
+    // words that should be indexed but not stemmed.
     Lucene::HashSet<Lucene::String> exclusionSet;
 
     Lucene::LuceneVersion::Version matchVersion;
 
-    /// List of typical German stopwords.
+    // list of stop words
     static const wchar_t* _ENGLISH_STOP_WORDS[];
 
     public:
-    /// Returns an unmodifiable instance of the default stop-words set.
+    // unmodifiable instance of the default stop-words set
     static const Lucene::HashSet<Lucene::String> getDefaultStopSet();
 
     void setStemExclusionTable(Lucene::HashSet<Lucene::String> exclusions);
