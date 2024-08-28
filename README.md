@@ -77,3 +77,52 @@ Fields within Synology NAS FTS:
 Lucene version compatibility: v3.0.7.
 
 [Luke 4.3.0](https://github.com/DmitryKey/luke/releases?page=4) can be used to read the Lucene++ indices.
+
+## setup
+
+- Runs in Docker
+- Exposes search interface on port `18080`
+
+### build locally
+
+`docker build . -t synosearch`
+
+### configure
+
+To find relevant paths within volumeX:
+
+`find /volumeX -maxdepth 1 -mindepth 1 -type d ! -name "@*"`
+
+### deploy
+
+**important** do not deploy this version on any production system: the `/get` endpoint allows all documents to be
+returned with no permissions checks, and there is no filtering currently applied to the search.
+
+To run and expose a share `/volume1/dropbox`, execute as follows:
+
+```
+nas$> docker run -p 18080:18080 \
+  -v /volume1/dropbox:/volume1/dropbox:ro \
+  -v /volume1/dropbox/@eaDir/SYNO@.fileindexdb:/indices/dropbox:ro \
+  synosearch -index /indices/dropbox
+```
+
+Then you should be able to hit the `/search` endpoint:
+
+`curl "http://hostname:18080/search?q=example" | jq '.'`
+
+This will then return search results as JSON:
+
+```
+{
+  "hits": [
+    {
+      "path": "/volume1/dropbox/ExampleNotificationPlugin.java",
+      "fs_size": 995,
+      "score": 1.72329,
+      "extension": "java"
+    }
+  ],
+  "total_hits": 1
+}
+```

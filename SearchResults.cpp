@@ -36,6 +36,16 @@ namespace Search {
         score = docScore;
     }
 
+    const std::wstring &SearchResult::getExtension() const {
+        return extension;
+    }
+
+    void SearchResult::setExtension(const std::wstring &docExtension) {
+        extension = docExtension;
+    }
+
+    ///
+
     void SearchResults::print() const {
         std::cout << "Hits: " << totalHits << "\n";
     }

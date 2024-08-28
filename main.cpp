@@ -71,6 +71,11 @@ static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const
             result.setFsSize(Lucene::StringUtils::toInt(fsSize));
         }
 
+        Lucene::String extension = doc->get(SynoTerms::extension);
+        if (!extension.empty()) {
+            result.setExtension(extension);
+        }
+
         sr.appendResult(result);
     }
 
@@ -112,6 +117,9 @@ crow::json::wvalue to_json(const Search::SearchResult& sr) {
     }
     if (sr.getScore()) {
         json["score"] = sr.getScore();
+    }
+    if (!sr.getExtension().empty()) {
+        json["extension"] = wstring_to_string(sr.getExtension());
     }
     return json;
 }
@@ -160,6 +168,44 @@ int main(int argc, char* argv[]) {
         crow::json::wvalue x = to_json(sr);
 
         return x;
+    });
+
+    CROW_ROUTE(app, "/get")([](const crow::request& req, crow::response& res){
+        std::string path = req.url_params.get("p");
+        std::ifstream file_stream(path, std::ios::binary);
+
+        if (!file_stream) {
+            res.code = 404;
+            res.end("File not found");
+            return;
+        }
+
+        file_stream.seekg(0, std::ios::end);
+        std::streamsize size = file_stream.tellg();
+        file_stream.seekg(0, std::ios::beg);
+
+        // Read the file content into a buffer
+        std::vector<char> buffer(size);
+        if (file_stream.read(buffer.data(), size)) {
+            if (path.find(".pdf") != std::string::npos) {
+                res.set_header("Content-Type", "application/pdf");
+            } else if (path.find(".docx") != std::string::npos) {
+                res.set_header("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+            } else {
+                res.set_header("Content-Type", "application/octet-stream");
+            }
+
+            // Encourage the browser to display the file inline
+            res.set_header("Content-Disposition", "inline; filename=" + path);
+            res.set_header("Content-Length", std::to_string(buffer.size()));
+            res.body.assign(buffer.begin(), buffer.end());
+            res.code = 200;
+        } else {
+            res.code = 500;
+            res.end("Failed to read the file");
+        }
+
+        res.end();
     });
 
     app.port(18080).run();
