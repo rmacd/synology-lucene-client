@@ -44,6 +44,14 @@ namespace Search {
         extension = docExtension;
     }
 
+    const std::vector<std::wstring> &SearchResult::getHighlights() const {
+        return highlights;
+    };
+
+    void SearchResult::setHighlights(const std::vector<std::wstring> &docHighlights) {
+        highlights = docHighlights;
+    };
+
     ///
 
     void SearchResults::print() const {

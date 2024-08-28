@@ -13,6 +13,7 @@ namespace Search {
         std::uint32_t fsSize;
         float score;
         std::wstring extension;
+        std::vector<std::wstring> highlights;
 
     public:
         const std::wstring &getPath() const;
@@ -34,6 +35,10 @@ namespace Search {
         const std::wstring &getExtension() const;
 
         void setExtension(const std::wstring &docExtension);
+
+        const std::vector<std::wstring> &getHighlights() const;
+
+        void setHighlights(const std::vector<std::wstring> &highlights);
     };
 
     class SearchResults {

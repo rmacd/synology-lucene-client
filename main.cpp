@@ -7,6 +7,15 @@
 #include <boost/algorithm/string.hpp>
 #include "lucene++/LuceneHeaders.h"
 #include "lucene++/FilterIndexReader.h"
+
+// highlighting
+#include "lucene++/Highlighter.h"
+#include "lucene++/LuceneHeaders.h"
+#include "lucene++/QueryScorer.h"
+#include "lucene++/SimpleHTMLFormatter.h"
+#include "lucene++/SimpleSpanFragmenter.h"
+#include "lucene++/SimpleFragmenter.h"
+
 #include "lucene++/MiscUtils.h"
 #include "SynoTerms.h"
 #include "SynoAnalyzer.h"
@@ -30,10 +39,19 @@ float convertToFloat(const Lucene::NumericValue& value) {
     }
 }
 
+std::vector<std::wstring> convertToVectorStrings(const Lucene::Collection<Lucene::String>& input) {
+    std::vector<std::wstring> result;
+    for (size_t i = 0; i < input.size(); ++i) {
+        Lucene::String luceneStr = input[i];
+        result.push_back(luceneStr);
+    }
+    return result;
+}
+
 static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const Lucene::QueryPtr& query, uint32_t hitsPerPage) {
 
     // maxHits = hitsPerPage * 5
-    uint32_t maxHits = 100;
+    uint32_t maxHits = 50;
     Lucene::TopScoreDocCollectorPtr collector = Lucene::TopScoreDocCollector::create(maxHits, true);
 
     CROW_LOG_INFO << "Searching for: " << wstring_to_string(query->toString());
@@ -49,13 +67,32 @@ static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const
     uint32_t start = 0;
     uint32_t end = (numTotalHits < maxHits) ? numTotalHits : maxHits;
 
+    // set up highlighter etc
+    auto analyzer = Lucene::newLucene<Search::SynoAnalyzer>(Lucene::LuceneVersion::LUCENE_CURRENT);
+    auto formatter = Lucene::newLucene<Lucene::SimpleHTMLFormatter>(L"<mark>", L"</mark>");
+    auto scorer = Lucene::newLucene<Lucene::QueryScorer>(query);
+    auto highlighter = Lucene::newLucene<Lucene::Highlighter>(formatter, scorer);
+    highlighter->setTextFragmenter(Lucene::newLucene<Lucene::SimpleFragmenter>(50));
+
     for (uint32_t i = start; i < end; ++i) {
         Search::SearchResult result;
 
+        // grab doc
         Lucene::DocumentPtr doc = searcher->doc(hits[i]->doc);
+
+        // get highlights
+        Lucene::String text = doc->get(SynoTerms::textContent);
+        Lucene::TokenStreamPtr tokenStream = analyzer->tokenStream(SynoTerms::textContent, Lucene::newLucene<Lucene::StringReader>(text));
+        Lucene::Collection<Lucene::String> highlights = highlighter->getBestFragments(tokenStream, text, 3);
+        if (!highlights.empty()) {
+            result.setHighlights(convertToVectorStrings(highlights));
+        }
+
+        // set score
         Lucene::NumericValue score = hits[i]->score;
         result.setScore(convertToFloat(score));
 
+        // path
         Lucene::String path = doc->get(SynoTerms::path);
         if (!path.empty()) {
             result.setPath(path);
@@ -75,6 +112,8 @@ static Search::SearchResults doSearch(const Lucene::SearcherPtr& searcher, const
         if (!extension.empty()) {
             result.setExtension(extension);
         }
+
+        Lucene::String explanation = searcher->explain(query, hits[i]->doc)->toHtml();
 
         sr.appendResult(result);
     }
@@ -121,6 +160,13 @@ crow::json::wvalue to_json(const Search::SearchResult& sr) {
     if (!sr.getExtension().empty()) {
         json["extension"] = wstring_to_string(sr.getExtension());
     }
+    if (!sr.getHighlights().empty()) {
+        std::vector<crow::json::wvalue> highlights;
+        for (const auto& highlight : sr.getHighlights()) {
+            highlights.push_back(wstring_to_string(highlight));
+        }
+        json["highlights"] = std::move(highlights);
+    }
     return json;
 }
 
@@ -131,7 +177,7 @@ crow::json::wvalue to_json(const Search::SearchResults& sr) {
 
     if (sr.getTotalHits() > 0) {
         for (const auto& result : sr.getResults()) {
-             hits.push_back(to_json(result));
+            hits.push_back(to_json(result));
         }
         json["hits"] = std::move(hits);
     }
